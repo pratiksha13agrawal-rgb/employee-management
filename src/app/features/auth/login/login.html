@@ -1,0 +1,109 @@
+<div class="container">
+  <div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-md-5">
+
+      <div class="card shadow-lg border-0">
+
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white text-center py-4">
+          <i class="bi bi-briefcase fs-1"></i>
+          <h4 class="mt-2 mb-0">Employee Management</h4>
+          <small>Please login to continue</small>
+        </div>
+
+        <!-- Card Body -->
+         
+        <div class="card-body p-4">
+          @if(toastService.visible()) {
+               <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+                 <div class="toast show align-items-center text-white border-0"
+                   [class]="toastService.cssClass()">
+                   <div class="d-flex">
+                     <div class="toast-body">{{ toastService.message() }}</div>
+                   </div>
+                 </div>
+               </div>
+          }
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                <i class="bi bi-envelope me-1"></i>
+                Email Address
+              </label>
+              <input
+                type="email"
+                formControlName="email"
+                class="form-control"
+                [class.is-invalid]="email?.invalid && email?.touched"
+                [class.is-valid]="email?.valid && email?.touched"
+                placeholder="Enter your email">
+
+              <!-- Error Messages -->
+              @if(email?.invalid && email?.touched) {
+                <div class="invalid-feedback">
+                  @if(email?.errors?.['required']) {
+                    <span>Email is required</span>
+                  }
+                  @if(email?.errors?.['email']) {
+                    <span>Please enter valid email</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                <i class="bi bi-lock me-1"></i>
+                Password
+              </label>
+              <input
+                type="password"
+                formControlName="password"
+                class="form-control"
+                [class.is-invalid]="password?.invalid && password?.touched"
+                [class.is-valid]="password?.valid && password?.touched"
+                placeholder="Enter your password">
+
+              <!-- Error Messages -->
+              @if(password?.invalid && password?.touched) {
+                <div class="invalid-feedback">
+                  @if(password?.errors?.['required']) {
+                    <span>Password is required</span>
+                  }
+                  @if(password?.errors?.['minlength']) {
+                    <span>Password must be at least 6 characters</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mt-4">
+              <button type="submit"
+                class="btn btn-primary btn-lg"
+                [disabled]="loginForm.invalid">
+                <i class="bi bi-box-arrow-in-right me-2"></i>
+                Login
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="card-footer text-center py-3">
+          <small>Don't have an account?
+            <a routerLink="/auth/register"
+              class="text-primary fw-semibold">
+              Register here
+            </a>
+          </small>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,117 @@
+<div class="container mt-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold">
+      <i class="bi bi-people-fill me-2 text-primary"></i>
+      Employee List
+    </h4>
+    @if(role === 'admin') {
+    <button class="btn btn-primary" routerLink="/employees/add">
+      Add Employee
+    </button>
+}
+    <!-- <a routerLink="/employees/add"
+      class="btn btn-primary">
+      <i class="bi bi-person-plus me-2"></i>
+      Add Employee
+    </a> -->
+  </div>
+
+  <!-- Search Bar -->
+        <div class="mb-3">
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="bi bi-search"></i>
+            </span>
+            <input type="text" class="form-control"
+              placeholder="Search by name, email, department..."
+              (input)="searchQuery.set($any($event.target).value)">
+          </div>
+        </div>
+  <!-- Table -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        
+        <table class="table table-hover mb-0">
+
+          <!-- Table Header -->
+          <thead class="table-primary">
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Department</th>
+              <th>Phone</th>
+              <th>Salary</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <!-- Table Body -->
+          <tbody>
+            @for(emp of filteredEmployees(); track emp.id) {
+              <tr>
+                <td>{{ emp.id }}</td>
+                <td>
+                  <i class="bi bi-person-circle me-1 text-primary"></i>
+                  {{ emp.name }}
+                </td>
+                <td>{{ emp.email }}</td>
+                <td>
+                  <span class="badge bg-info text-dark">
+                    {{ emp.department }}
+                  </span>
+                </td>
+                <td>{{ emp.phone }}</td>
+                <td>₹{{ emp.salary | number }}</td>
+                <td>
+                  @if(emp.role === 'admin') {
+                    <span class="badge bg-danger">Admin</span>
+                  } @else {
+                    <span class="badge bg-success">User</span>
+                  }
+                </td>
+                <td>
+                  <!-- Edit Button -->
+                  <a [routerLink]="['/employees/edit', emp.id]"
+                    class="btn btn-sm btn-outline-primary me-1">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <!-- Delete Button -->
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    (click)="confirmDelete(emp.id)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+
+  @if(showDeleteModal()) {
+  <div class="modal show d-block" style="background:rgba(0,0,0,0.5)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Confirmation</h5>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this employee?
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="onDeleteCancelled()">Cancel</button>
+          <button class="btn btn-danger" (click)="onDeleteConfirmed()">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+</div>

@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  height: calc(100vh - 56px);
+  overflow-y: auto;  // ← yeh change karo
+}
+
+.min-vh-100 {
+  min-height: calc(100vh - 56px) !important;
+}

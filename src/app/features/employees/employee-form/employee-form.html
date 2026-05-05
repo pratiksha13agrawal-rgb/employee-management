@@ -1,0 +1,215 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+
+      <div class="card shadow-sm border-0">
+
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white py-3">
+          <h5 class="mb-0 fw-bold text-white">
+            @if(isEditMode) {
+              <i class="bi bi-pencil-square me-2"></i>
+              Edit Employee
+            } @else {
+              <i class="bi bi-person-plus me-2"></i>
+              Add Employee
+            }
+          </h5>     
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body p-4">
+          <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+
+            <!-- Row 1 — Name & Email -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="bi bi-person me-1"></i>
+                  Full Name
+                </label>
+                <input type="text"
+                  formControlName="name"
+                  class="form-control"
+                  [class.is-invalid]="name?.invalid && name?.touched"
+                  [class.is-valid]="name?.valid && name?.touched"
+                  placeholder="Enter full name">
+                @if(name?.invalid && name?.touched) {
+                  <div class="invalid-feedback">
+                    @if(name?.errors?.['required']) {
+                      <span>Name is required</span>
+                    }
+                    @if(name?.errors?.['minlength']) {
+                      <span>Min 3 characters required</span>
+                    }
+                    @if(name?.errors?.['noNumber']) {
+                      <span>Name cannot contain numbers</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="bi bi-envelope me-1"></i>
+                  Email
+                </label>
+                <input type="email"
+                  formControlName="email"
+                  class="form-control"
+                  [class.is-invalid]="email?.invalid && email?.touched"
+                  [class.is-valid]="email?.valid && email?.touched"
+                  placeholder="Enter email">
+                @if(email?.invalid && email?.touched) {
+                  <div class="invalid-feedback">
+                    @if(email?.errors?.['required']) {
+                      <span>Email is required</span>
+                    }
+                    @if(email?.errors?.['email']) {
+                      <span>Please enter valid email</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Row 2 — Phone & Department -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="bi bi-telephone me-1"></i>
+                  Phone
+                </label>
+                <input type="text"
+                  formControlName="phone"
+                  class="form-control"
+                  [class.is-invalid]="phone?.invalid && phone?.touched"
+                  [class.is-valid]="phone?.valid && phone?.touched"
+                  placeholder="10 digit number">
+                @if(phone?.invalid && phone?.touched) {
+                  <div class="invalid-feedback">
+                    @if(phone?.errors?.['required']) {
+                      <span>Phone is required</span>
+                    }
+                    @if(phone?.errors?.['pattern']) {
+                      <span>Enter valid 10 digit number</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="bi bi-building me-1"></i>
+                  Department
+                </label>
+                <select
+                  formControlName="department"
+                  class="form-select"
+                  [class.is-invalid]="department?.invalid && department?.touched"
+                  [class.is-valid]="department?.valid && department?.touched">
+                  <option value="">Select Department</option>
+                  <option value="IT">IT</option>
+                  <option value="HR">HR</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Operations">Operations</option>
+                </select>
+                @if(department?.invalid && department?.touched) {
+                  <div class="invalid-feedback">
+                    <span>Department is required</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Row 3 — Salary & Role -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="bi bi-currency-rupee me-1"></i>
+                  Salary
+                </label>
+                <input type="number"
+                  formControlName="salary"
+                  class="form-control"
+                  [class.is-invalid]="salary?.invalid && salary?.touched"
+                  [class.is-valid]="salary?.valid && salary?.touched"
+                  placeholder="Enter salary">
+                @if(salary?.invalid && salary?.touched) {
+                  <div class="invalid-feedback">
+                    @if(salary?.errors?.['required']) {
+                      <span>Salary is required</span>
+                    }
+                    @if(salary?.errors?.['min']) {
+                      <span>Salary must be at least 1000</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="bi bi-shield me-1"></i>
+                  Role
+                </label>
+                <select
+                  formControlName="role"
+                  class="form-select"
+                  [class.is-invalid]="role?.invalid && role?.touched"
+                  [class.is-valid]="role?.valid && role?.touched">
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Row 4 — Join Date -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="bi bi-calendar me-1"></i>
+                  Join Date
+                </label>
+                <input type="date"
+                  formControlName="joinDate"
+                  class="form-control"
+                  [class.is-invalid]="joinDate?.invalid && joinDate?.touched"
+                  [class.is-valid]="joinDate?.valid && joinDate?.touched">
+                @if(joinDate?.invalid && joinDate?.touched) {
+                  <div class="invalid-feedback">
+                    <span>Join date is required</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex gap-2 mt-2">
+              <button type="submit"
+                class="btn btn-primary px-4"
+                [attr.disabled]="employeeForm.invalid? true : null">
+                @if(isEditMode) {
+                  <i class="bi bi-check-circle me-2"></i>
+                  Update Employee
+                } @else {
+                  <i class="bi bi-plus-circle me-2"></i>
+                  Add Employee
+                }
+              </button>
+
+              <button type="button"
+                class="btn btn-outline-secondary"
+                (click)="onCancel()">
+                <i class="bi bi-x-circle me-2"></i>
+                Cancel
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

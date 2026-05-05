@@ -1,0 +1,37 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <!-- Brand logo -->
+         <a href="" class="navbar-brand fw-bold" routerLink="">
+            <i class="bi bi-person-badge me-2"></i>
+            Employee Management
+         </a>
+
+         <!-- Mobile Toggle button -->
+         <button class="navbar-toggler" type="button"  data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+
+         <!-- Nav links -->
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                @if(!isLoggedIn) {                    
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-dark px-3" routerLink="/auth/login" routerLinkActive="active">
+                          <i class="bi bi-box-arrow-in-right ms-1"></i>
+                          Login
+                        </a>
+                    </li>
+                }
+
+                @if(isLoggedIn) {
+                    <li class="nav-item">
+                        <a href="" class="nav-link" href="#">
+                            <i class="bi bi-box-arrow-right ms-1">Logout</i>
+                        </a>
+                    </li>
+                }
+
+            </ul>
+          </div>
+    </div>
+</nav>

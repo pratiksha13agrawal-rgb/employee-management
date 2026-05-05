@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  height: calc(100vh - 56px); // 56px = navbar height
+  overflow: hidden;
+}
+
+.min-vh-100 {
+  min-height: calc(100vh - 56px) !important;
+}

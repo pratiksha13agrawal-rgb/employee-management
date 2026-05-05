@@ -1,0 +1,161 @@
+<div class="container">
+  <div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-md-5">
+
+      <div class="card shadow-lg border-0">
+
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white text-center py-4">
+          <i class="bi bi-person-plus fs-1"></i>
+          <h4 class="mt-2 mb-0">Create Account</h4>
+          <small>Register to get started</small>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body p-3">
+           @if(toastService.visible()) {
+              <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+                <div class="toast show align-items-center text-white border-0"
+                  [class]="toastService.cssClass()">
+                  <div class="d-flex">
+                    <div class="toast-body">{{ toastService.message() }}</div>
+                  </div>
+                </div>
+              </div>
+            }
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+            <!-- Name -->
+            <div class="mb-2">
+              <label class="form-label fw-semibold">
+                <i class="bi bi-person me-1"></i>
+                Full Name
+              </label>
+              <input
+                type="text"
+                formControlName="name"
+                class="form-control"
+                [class.is-invalid]="name?.invalid && name?.touched"
+                [class.is-valid]="name?.valid && name?.touched"
+                placeholder="Enter your full name">
+
+              @if(name?.invalid && name?.touched) {
+                <div class="invalid-feedback">
+                  @if(name?.errors?.['required']) {
+                    <span>Name is required</span>
+                  }
+                  @if(name?.errors?.['minlength']) {
+                    <span>Name must be at least 3 characters.</span>
+                  }
+                  @if(name?.errors?.['noNumber']) {
+                    <span>Name cannot contain numbers.</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Email -->
+            <div class="mb-2">
+              <label class="form-label fw-semibold">
+                <i class="bi bi-envelope me-1"></i>
+                Email Address
+              </label>
+              <input
+                type="email"
+                formControlName="email"
+                class="form-control"
+                [class.is-invalid]="email?.invalid && email?.touched"
+                [class.is-valid]="email?.valid && email?.touched"
+                placeholder="Enter your email">
+
+              @if(email?.invalid && email?.touched) {
+                <div class="invalid-feedback">
+                  @if(email?.errors?.['required']) {
+                    <span>Email is required</span>
+                  }
+                  @if(email?.errors?.['email']) {
+                    <span>Please enter valid email</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Password -->
+            <div class="mb-2">
+              <label class="form-label fw-semibold">
+                <i class="bi bi-lock me-1"></i>
+                Password
+              </label>
+              <input
+                type="password"
+                formControlName="password"
+                class="form-control"
+                [class.is-invalid]="password?.invalid && password?.touched"
+                [class.is-valid]="password?.valid && password?.touched"
+                placeholder="Enter your password">
+
+              @if(password?.invalid && password?.touched) {
+                <div class="invalid-feedback">
+                  @if(password?.errors?.['required']) {
+                    <span>Password is required</span>
+                  }
+                  @if(password?.errors?.['minlength']) {
+                    <span>Password must be at least 6 characters</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-2">
+              <label class="form-label fw-semibold">
+                <i class="bi bi-lock-fill me-1"></i>
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                formControlName="confirmPassword"
+                class="form-control"
+                [class.is-invalid]="confirmPassword?.invalid && confirmPassword?.touched"
+                [class.is-valid]="confirmPassword?.valid && confirmPassword?.touched"
+                placeholder="Confirm your password">
+
+              @if(confirmPassword?.invalid && confirmPassword?.touched) {
+                <div class="invalid-feedback">
+                  @if(confirmPassword?.errors?.['required']) {
+                    <span>Confirm password is required</span>
+                  }
+                  @if(confirmPassword?.errors?.['mismatch']) {
+                    <span>Passwords do not match!</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mt-3">
+              <button type="submit"
+                class="btn btn-primary btn-lg"
+                [disabled]="registerForm.invalid">
+                <i class="bi bi-person-check me-2"></i>
+                Register
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="card-footer text-center py-3">
+          <small>Already have an account?
+            <a routerLink="/auth/login"
+              class="text-primary fw-semibold">
+              Login here
+            </a>
+          </small>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
