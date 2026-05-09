@@ -1,19 +1,21 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { COMMON_IMPORTS } from '../../../shared/common.imports';
 import { EmployeeService } from '../../../core/services/employeeService';
 import { UserService } from '../../../core/services/user-service';
 import { Sidebar } from '../../../shared/components/sidebar/sidebar';
 import { Auth } from '../../../core/services/auth';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-
+import { SalaryFormatPipe } from '../../../shared/pipes/salary-format-pipe';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables); 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [COMMON_IMPORTS, Sidebar],
+  imports: [COMMON_IMPORTS, Sidebar, SalaryFormatPipe ],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.scss',
   standalone: true
 })
-export class AdminDashboard implements OnInit{
+export class AdminDashboard implements OnInit, AfterViewInit {
   private employeeService = inject(EmployeeService);
   private userService = inject(UserService);
   private authService = inject(Auth);
@@ -30,6 +32,8 @@ export class AdminDashboard implements OnInit{
   totalAdmins = 0;
   totalUsers = 0;
   searchSubject = new Subject<string>();
+  chartInstance: any;
+  @ViewChild('deptChart') deptChart!: ElementRef;
 
   onTabChange(tab: string) {
     this.activeTab = tab;
@@ -52,7 +56,15 @@ export class AdminDashboard implements OnInit{
           ).subscribe(query => {
             this.empSearchQuery.set(query);
             this.currentPage.set(1);
-          });
+       });
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      if(this.activeTab === 'dashboard') {
+        this.buildChart();
+      }
+    }, 1500);
   }
 
   loadUsers() {
@@ -119,4 +131,33 @@ export class AdminDashboard implements OnInit{
     const end = Math.min(total, start + 2);
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
+
+  buildChart() {
+  const employees = this.employees();
+  const departments = [...new Set(employees.map(e => e.department))];
+  const counts = departments.map(d => 
+    employees.filter(e => e.department === d).length
+  );
+
+  if(this.chartInstance) this.chartInstance.destroy();
+
+  this.chartInstance = new Chart(this.deptChart.nativeElement, {
+    type: 'bar',
+    data: {
+      labels: departments,
+      datasets: [{
+        label: 'Employees per Department',
+        data: counts,
+        backgroundColor: ['#0d6efd', '#198754', '#0dcaf0', '#ffc107', '#dc3545'],
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 3
+    } 
+  });
+
+  
+}
 }

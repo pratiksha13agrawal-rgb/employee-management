@@ -2,10 +2,11 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { Employee } from '../../../shared/models/employee';
 import { COMMON_IMPORTS } from '../../../shared/common.imports';
 import { EmployeeService } from '../../../core/services/employeeService';
+import { SalaryFormatPipe } from '../../../shared/pipes/salary-format-pipe';
 
 @Component({
   selector: 'app-employee-list',
-  imports: [...COMMON_IMPORTS],
+  imports: [...COMMON_IMPORTS, SalaryFormatPipe],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.scss',
   standalone: true
