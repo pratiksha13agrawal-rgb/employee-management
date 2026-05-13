@@ -4,7 +4,7 @@ import { FORM_IMPORTS } from '../../../shared/form.imports';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
-import { Toast } from '../../../core/services/toast';
+import { ToastService } from '../../../core/services/toast';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +18,7 @@ export class Login {
   private fb = inject(FormBuilder);
   private router = inject(Router); 
   private authService = inject(Auth);
-  toastService = inject(Toast);
+  toastService = inject(ToastService);
   
   loginForm = this.fb.group(
     {
@@ -46,8 +46,9 @@ export class Login {
                 this.router.navigate(['/dashboard/user']);
               }              
             },
-            error: () => {
-              this.toastService.show('Invalid credentials!', 'error');
+            error: (err) => {
+              const msg  = err.error?.message || 'Login Failed!'; 
+              this.toastService.show(msg, 'error');
             }
           });
     } else {

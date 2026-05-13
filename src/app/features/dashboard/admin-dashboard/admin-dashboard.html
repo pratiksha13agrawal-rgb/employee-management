@@ -185,11 +185,6 @@
             </ul>
           </nav>
         </div>
-        <!-- @for(page of getPages(); track page) {
-        <li class="page-item" [class.active]="currentPage() === page">
-          <a class="page-link" (click)="currentPage.set(page)" role="button">{{ page }}</a>
-        </li>
-      } -->
       </div>
     </div>
     
@@ -245,9 +240,14 @@
                     }
                   </td>
                   <td>
-                    <button class="btn btn-sm btn-outline-primary"
+                    <button class="btn btn-sm btn-outline-primary me-1"
                       (click)="makeEmployee(user.id)">
                       Make Employee
+                    </button>
+                    <button class="btn btn-sm"
+                      [class]="user.active ? 'btn-outline-danger' : 'btn-outline-success'"
+                      (click)="toggleActive(user.id)">
+                      {{ user.active ? 'Deactivate' : 'Activate' }}
                     </button>
                   </td>
                 </tr>

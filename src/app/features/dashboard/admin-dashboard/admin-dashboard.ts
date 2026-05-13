@@ -12,6 +12,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Employee } from '../../../shared/models/employee';
 import { EmployeeImportDTO } from '../../../shared/models/employeeImportDTO ';
+import { ToastService } from '../../../core/services/toast';
 
 Chart.register(...registerables); 
 @Component({
@@ -25,6 +26,7 @@ export class AdminDashboard implements OnInit, AfterViewInit {
   private employeeService = inject(EmployeeService);
   private userService = inject(UserService);
   private authService = inject(Auth);
+  private toastService = inject(ToastService);
   employees = this.employeeService.getAll();
   activeTab = 'dashboard';
   adminName = localStorage.getItem('email') || 'Admin';
@@ -212,8 +214,8 @@ export class AdminDashboard implements OnInit, AfterViewInit {
           const workbook = XLSX.read(e.target.result, { type: 'binary' });
           const sheet = workbook.Sheets[workbook.SheetNames[0]];
           const data: Employee[] = XLSX.utils.sheet_to_json(sheet);
-          if(data.length == 0) {          
-            alert("Excel file is empty.Please fill data in excel file");          
+          if(data.length == 0) {
+            this.toastService.show("Excel file is empty.Please fill data in excel file", 'warning');
             return;          
           }     
             
@@ -228,30 +230,36 @@ export class AdminDashboard implements OnInit, AfterViewInit {
           }));
 
           this.employeeService.bulkAdd(employees).subscribe({          
-            next: (result: any) => {            
-              alert(`✅ Saved:${result.saved}, ⚠️ Skipped:${result.skipped}`);            
+            next: (result: any) => {   
+              this.toastService.show(`Saved: ${result.saved}, Skipped: ${result.skipped}`, result.skipped > 0 ? 'warning' : 'success');             
               this.employeeService.loadAll();            
             },          
             error: (err) => {                      
              if(err.status == 400) {
               const message = err.error?.message || 'Validation failed! Check required fields.';
-              alert(`❌ ${message}`);
+              this.toastService.show(`❌ ${message}`, 'error');
             } else {
-              alert('❌ Import failed! Please close the Excel file and try again.');
+              this.toastService.show('❌ Import failed! Please close the Excel file and try again.', 'error');
             }            
             }          
           })        
       }catch(err) {
-         alert('❌ Error reading file! Make sure Excel file is closed.');
+        this.toastService.show('❌ Error reading file! Make sure Excel file is closed.', 'error');
       }
     };
 
     reader.onerror = () =>  {
-       alert('❌ File read failed! Please close the Excel file and try again.');
+      this.toastService.show('❌ File read failed! Please close the Excel file and try again.', 'error');
     }
    reader.readAsArrayBuffer(file);
   
     // Reset Input  — again same file can import
     event.target.value = '';
+  }
+
+  toggleActive(id: number) {
+    this.userService.toggleActive(id).subscribe(() => {
+      this.loadUsers();
+    });
   }
 }

@@ -3,6 +3,7 @@ import { COMMON_IMPORTS } from '../../../shared/common.imports';
 import { FORM_IMPORTS } from '../../../shared/form.imports';
 import { EmployeeService } from '../../../core/services/employeeService';
 import { Employee } from '../../../shared/models/employee';
+import { ToastService } from '../../../core/services/toast';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -13,6 +14,7 @@ import { Employee } from '../../../shared/models/employee';
 })
 export class UserDashboard implements OnInit {
   private employeeService = inject(EmployeeService);
+  private toastService = inject(ToastService);
   
   profile = signal<Employee | null>(null);
   isEditMode = false;
@@ -29,7 +31,7 @@ export class UserDashboard implements OnInit {
     if(this.profile()) {
        this.employeeService.update(this.profile()!);
        this.isEditMode = false;
-       alert('Profile updated!');
+       this.toastService.show('Profile updated!', 'success');
     }
    
   }

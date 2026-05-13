@@ -3,14 +3,14 @@ import { Injectable, signal } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-export class Toast {
- message = signal('');
-  cssClass = signal('');
+export class ToastService {
+  message = signal('');
+  type = signal<'success' | 'error' | 'warning'>('success');
   visible = signal(false);
 
-  show(message: string, type: 'success' | 'error' = 'success') {
+  show(message: string, type: 'success' | 'error' | 'warning' = 'success') {
     this.message.set(message);
-    this.cssClass.set(type === 'success' ? 'bg-success' : 'bg-danger');
+    this.type.set(type);
     this.visible.set(true);
     setTimeout(() => this.visible.set(false), 3000);
   }

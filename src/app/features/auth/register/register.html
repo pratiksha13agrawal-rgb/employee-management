@@ -13,18 +13,7 @@
 
         <!-- Card Body -->
         <div class="card-body p-3">
-           @if(toastService.visible()) {
-              <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
-                <div class="toast show align-items-center text-white border-0"
-                  [class]="toastService.cssClass()">
-                  <div class="d-flex">
-                    <div class="toast-body">{{ toastService.message() }}</div>
-                  </div>
-                </div>
-              </div>
-            }
           <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-
             <!-- Name -->
             <div class="mb-2">
               <label class="form-label fw-semibold">

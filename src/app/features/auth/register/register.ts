@@ -5,7 +5,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { noNumberValidator, passwordMatchValidator } from '../../../shared/validators/validators';
 import { Auth } from '../../../core/services/auth';
 import { Router } from '@angular/router';
-import { Toast } from '../../../core/services/toast';
+import { ToastService } from '../../../core/services/toast';
 
 @Component({
   selector: 'app-register',
@@ -18,7 +18,7 @@ export class Register {
   private authService = inject(Auth);
   private router = inject(Router);
   private fb= inject(FormBuilder);
-  toastService = inject(Toast);
+  toastService = inject(ToastService);
 
   registerForm = this.fb.group(
     {
