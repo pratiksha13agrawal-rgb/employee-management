@@ -7,5 +7,4 @@ export interface Employee {
     phone: string;
     role: string;
     joinDate: string;
-
 }

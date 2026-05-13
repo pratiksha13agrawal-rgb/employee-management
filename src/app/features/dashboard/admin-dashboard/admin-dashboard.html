@@ -69,11 +69,30 @@
     <!-- Employees Table -->
   @if(activeTab === 'employees') {
   <div class="card shadow-sm border-0">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-      <span class="fw-bold">All Employees</span>
-      <a routerLink="/employees/add" class="btn btn-primary btn-sm">
-        <i class="bi bi-person-plus me-1"></i>Add Employee
-      </a>
+    <div class="card-header bg-white">
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="fw-bold">All Employees</span>
+        <div class="d-flex gap-2">
+          <!-- Import -->
+          <input type="file" #importFile accept=".xlsx"
+            style="display:none"
+            (change)="importFromExcel($event)">
+          <button class="btn btn-warning btn-sm" (click)="importFile.click()">
+            <i class="bi bi-upload me-1"></i>Import
+          </button>
+          <!-- Export -->
+          <button class="btn btn-success btn-sm" (click)="exportToExcel()">
+            <i class="bi bi-file-earmark-excel me-1"></i>Excel
+          </button>
+          <button class="btn btn-danger btn-sm" (click)="exportToPDF()">
+            <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+          </button>
+          <!-- Add -->
+          <a routerLink="/employees/add" class="btn btn-primary btn-sm">
+            <i class="bi bi-person-plus me-1"></i>Add Employee
+          </a>
+        </div>
+      </div>
     </div>
     
     <div class="card-body">

@@ -1,16 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Auth { 
-  private apiUrl = "http://localhost:8080/api/auth";
+  private apiUrl = `${environment.apiUrl}/auth`;
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  login(email: string, password: string) {
+  login(email: string, password: string) {    
     return this.http.post<{token: string, role: string}>(`${this.apiUrl}/login`, {email, password});
   }
 

@@ -7,6 +7,12 @@ import { Auth } from '../../../core/services/auth';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { SalaryFormatPipe } from '../../../shared/pipes/salary-format-pipe';
 import { Chart, registerables } from 'chart.js';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { Employee } from '../../../shared/models/employee';
+import { EmployeeImportDTO } from '../../../shared/models/employeeImportDTO ';
+
 Chart.register(...registerables); 
 @Component({
   selector: 'app-admin-dashboard',
@@ -157,7 +163,95 @@ export class AdminDashboard implements OnInit, AfterViewInit {
       aspectRatio: 3
     } 
   });
-
-  
+ 
 }
+
+  exportToExcel() {
+    const data = this.employees().map(emp => ({
+      ID: emp.id,
+      Name: emp.name,
+      Email: emp.email,
+      Department: emp.department,
+      Phone: emp.phone,
+      Salary: emp.salary,
+      Role: emp.role,
+      JoinDate: emp.joinDate
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Employees');
+    XLSX.writeFile(wb, 'employees.xlsx');
+  }
+
+  exportToPDF() {
+    const doc = new jsPDF();
+    
+    doc.text('Employee List', 14, 10);
+    
+    autoTable(doc, {
+      head: [['ID', 'Name', 'Email', 'Department', 'Phone', 'Salary', 'Role']],
+      body: this.employees().map(emp => [
+        emp.id, emp.name, emp.email, 
+        emp.department, emp.phone, emp.salary, emp.role
+      ])
+    });
+    
+    doc.save('employees.pdf');
+  }
+
+   importFromExcel(event: any) {
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (e: any) => {
+      try{
+          const workbook = XLSX.read(e.target.result, { type: 'binary' });
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const data: Employee[] = XLSX.utils.sheet_to_json(sheet);
+          if(data.length == 0) {          
+            alert("Excel file is empty.Please fill data in excel file");          
+            return;          
+          }     
+            
+          const employees:EmployeeImportDTO[] = (data as any[]).map(row => ({          
+            name: row['name'],          
+            email: row['email'],          
+            phone: row['phone'],          
+            department: row['department'],          
+            salary: row['salary'],          
+            role: row['role'],          
+            joinDate: row['joinDate']          
+          }));
+
+          this.employeeService.bulkAdd(employees).subscribe({          
+            next: (result: any) => {            
+              alert(`✅ Saved:${result.saved}, ⚠️ Skipped:${result.skipped}`);            
+              this.employeeService.loadAll();            
+            },          
+            error: (err) => {                      
+             if(err.status == 400) {
+              const message = err.error?.message || 'Validation failed! Check required fields.';
+              alert(`❌ ${message}`);
+            } else {
+              alert('❌ Import failed! Please close the Excel file and try again.');
+            }            
+            }          
+          })        
+      }catch(err) {
+         alert('❌ Error reading file! Make sure Excel file is closed.');
+      }
+    };
+
+    reader.onerror = () =>  {
+       alert('❌ File read failed! Please close the Excel file and try again.');
+    }
+   reader.readAsArrayBuffer(file);
+  
+    // Reset Input  — again same file can import
+    event.target.value = '';
+  }
 }

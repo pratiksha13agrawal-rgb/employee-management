@@ -1,12 +1,14 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Employee } from '../../shared/models/employee';
 import { HttpClient } from '@angular/common/http';
+import { EmployeeImportDTO } from '../../shared/models/employeeImportDTO ';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeeService {
-  private apiUrl = "http://localhost:8080/api/employees";
+  private apiUrl = `${environment.apiUrl}/employees`;
   private http = inject(HttpClient);
   private employees = signal<Employee[]>([]);
   
@@ -38,5 +40,9 @@ export class EmployeeService {
 
   getByEmail(email: string) {
     return this.http.get<Employee>(`${this.apiUrl}/by-email/${email}`);
+  }
+
+  bulkAdd(employees: EmployeeImportDTO[]) {
+    return this.http.post<Employee[]>(`${this.apiUrl}/bulk`, employees);
   }
 }
