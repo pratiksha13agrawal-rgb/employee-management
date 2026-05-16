@@ -1,36 +1,67 @@
-# Employee Management System
+# Employee Management System - Frontend
 
-A full-stack Employee Management System built with Angular 21 and Spring Boot.
+Angular 21 based Employee Management System with role-based access control.
 
 ## Tech Stack
-- **Frontend:** Angular 21, Bootstrap 5, TypeScript
-- **Backend:** Spring Boot 3.5, Java 17
-- **Database:** MySQL
-- **Authentication:** JWT Token
+- Angular 21 (Standalone Components)
+- Bootstrap 5
+- TypeScript
+- Chart.js
+- XLSX (Import/Export)
+- JWT Authentication
 
 ## Features
-- ✅ Login / Register with JWT Auth
+- ✅ Login / Register with JWT
 - ✅ Role Based Access (Admin / User)
 - ✅ Admin Dashboard with Sidebar
 - ✅ Employee CRUD Operations
+- ✅ Bulk Import (Excel) with validation
+- ✅ Export Excel / PDF
 - ✅ Search & Pagination
 - ✅ User Profile Management
 - ✅ HTTP Interceptor (Auth + Loader)
 - ✅ Lazy Loading
 - ✅ Signals & RxJS
+- ✅ Active/Inactive user management
+- ✅ Toast Notifications
 
 ## Setup
 
-### Frontend
+### Prerequisites
+- Node.js 18+
+- Angular CLI 21
+
+### Install
 ```bash
 npm install
+```
+
+### Configure API URL
+Update `src/environments/environment.development.ts`:
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8080/api'
+};
+```
+
+### Run
+```bash
 ng serve
 ```
 
-### Backend
-- Configure `application.properties` from `application.properties.example`
-- Run MySQL and create database `employee_db`
-- Run Spring Boot application
+## Default Roles
+| Role | Access |
+|------|--------|
+| Admin | Full access — CRUD, Import/Export, User management |
+| User | Profile view and edit only |
+
+## Bulk Import Format
+Excel headers must be lowercase:
+name | email | phone | department | salary | role | joinDate
+
+## Backend
+[Employee Management Backend](https://github.com/pratiksha13agrawal-rgb/employee-management-backend)
 
 ## Author
 Pratiksha Agrawal

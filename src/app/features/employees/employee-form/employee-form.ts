@@ -1,11 +1,11 @@
-import { Component, Inject, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { COMMON_IMPORTS } from '../../../shared/common.imports';
 import { FORM_IMPORTS } from '../../../shared/form.imports';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Employee } from '../../../shared/models/employee';
+import { ActivatedRoute } from '@angular/router';
 import { noNumberValidator } from '../../../shared/validators/validators';
 import { EmployeeService } from '../../../core/services/employeeService';
+import { ToastService } from '../../../core/services/toast';
 
 @Component({
   selector: 'app-employee-form',
@@ -14,15 +14,26 @@ import { EmployeeService } from '../../../core/services/employeeService';
   styleUrl: './employee-form.scss',
   standalone: true
 })
-export class EmployeeForm implements OnInit {
+export class EmployeeForm {
+  
   private fb = inject(FormBuilder);
-  private router = inject(Router);
   private route = inject(ActivatedRoute);
   private employeeService = inject(EmployeeService);
+  private toastService = inject(ToastService);
 
   // Detect if Add or Edit mode
   isEditMode = false;
   employeeId: number | null = null;
+
+  @Input() set editId(id: number | null) {
+  if(id) {
+      this.isEditMode = true;
+      this.employeeId = id;
+      this.loadEmployee(id);
+    }
+  }
+
+  @Output() formSubmitted = new EventEmitter<void>();
 
   employeeForm: FormGroup = this.fb.group({
     name: ['', [
@@ -47,15 +58,6 @@ export class EmployeeForm implements OnInit {
   get role() { return this.employeeForm.get('role'); }
   get joinDate() { return this.employeeForm.get('joinDate'); }
 
-  ngOnInit() {
-    // Get id from URL — check edit mode
-    this.employeeId = +this.route.snapshot.paramMap.get('id')!;
-    if (this.employeeId) {
-      this.isEditMode = true;
-      this.loadEmployee(this.employeeId);
-    }
-  }
-
   loadEmployee(id: number) {
     // Find employee by ID
    const employee = this.employeeService.getById(id);
@@ -64,22 +66,25 @@ export class EmployeeForm implements OnInit {
     }
   }
 
-  onSubmit() {
+  onSubmit() {    
     if (this.employeeForm.valid) {
       if (this.isEditMode) {
-       this.employeeService.update({ ...this.employeeForm.value, id: this.employeeId });
+         this.employeeService.update({ ...this.employeeForm.value, id: this.employeeId });
+         this.toastService.show('Employee updated!', 'success');
        } else {
          this.employeeService.add(this.employeeForm.value);
+         this.toastService.show('Employee saved!', 'success');
        }
+       this.formSubmitted.emit();
       // Go back to employee list
-      this.router.navigate(['/dashboard/admin']);
     } else {
       this.employeeForm.markAllAsTouched();
+      this.toastService.show('Please fill all required fields!', 'error');
     }
   }
 
   onCancel() {
-    this.router.navigate(['/dashboard/admin']);
+    this.formSubmitted.emit();
   }
 }
 

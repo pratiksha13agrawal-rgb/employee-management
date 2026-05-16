@@ -1,85 +1,149 @@
-<div class="container mt-4">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
+<div class="d-flex" style="min-height: 100vh;">
 
-      @if(profile()) {
-        <div class="card shadow-sm border-0">
-          
-          <!-- Profile Header -->
-          <div class="card-body text-center bg-primary text-white rounded-top py-4">
-            <i class="bi bi-person-circle" style="font-size: 80px;"></i>
-            <h5 class="mt-2 mb-0">{{ profile()!.name }}</h5>
-            <small>{{ profile()!.role | titlecase }}</small>
+  <app-sidebar
+    [items]="userSidebarItems"
+    [activeTab]="activeTab"
+    [userName]="profile()?.name || 'User'"
+    userRole="Employee"
+    (tabChange)="activeTab = $event"
+    (onLogout)="logout()">
+  </app-sidebar>
+
+  <!-- Main Content -->
+  <div class="flex-grow-1 bg-light">
+
+    <!-- Top Bar -->
+    <div class="bg-white px-4 py-3 shadow-sm">
+      <h5 class="fw-bold mb-0 text-capitalize">{{ activeTab }}</h5>
+    </div>
+
+    <div class="p-4">
+
+      <!-- Dashboard Tab -->
+      @if(activeTab === 'dashboard') {
+        <div class="row g-4">
+          <div class="col-12">
+            <h4>Welcome, {{ profile()?.name || 'User' }}! 👋</h4>
+            <p class="text-muted">Here's your profile overview.</p>
           </div>
 
-          <!-- Profile Info -->
-          <div class="card-body">
-            @if(!isEditMode) {
-              <!-- View Mode -->
-              <div class="mb-2">
-                <label class="fw-bold">Email:</label>
-                <p class="text-muted">{{ profile()!.email }}</p>
+          <!-- Profile Card -->
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-4">
+              <i class="bi bi-person-circle text-primary" style="font-size: 80px;"></i>
+              <h5 class="mt-2">{{ profile()?.name }}</h5>
+              <span class="badge bg-primary">{{ profile()?.role | titlecase }}</span>
+              <hr>
+              <div class="text-start">
+                <p class="mb-1"><i class="bi bi-envelope me-2 text-muted"></i>{{ profile()?.email }}</p>
+                <p class="mb-1"><i class="bi bi-phone me-2 text-muted"></i>{{ profile()?.phone }}</p>
+                <p class="mb-1"><i class="bi bi-building me-2 text-muted"></i>{{ profile()?.department }}</p>
+                <p class="mb-1"><i class="bi bi-cash me-2 text-muted"></i>{{ profile()?.salary | number }}</p>
               </div>
-              <div class="mb-2">
-                <label class="fw-bold">Phone:</label>
-                <p class="text-muted">{{ profile()!.phone }}</p>
-              </div>
-              <div class="mb-2">
-                <label class="fw-bold">Department:</label>
-                <p class="text-muted">{{ profile()!.department }}</p>
-              </div>
-              <div class="mb-2">
-                <label class="fw-bold">Salary:</label>
-                <p class="text-muted">₹{{ profile()!.salary | number }}</p>
-              </div>
-              <button class="btn btn-primary w-100"
-                (click)="isEditMode = true">
+              <button class="btn btn-primary mt-3" (click)="activeTab = 'profile'">
                 <i class="bi bi-pencil me-2"></i>Edit Profile
               </button>
-            } @else {
-              <!-- Edit Mode -->
-              <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input type="text" class="form-control"
-                  [(ngModel)]="profile()!.name">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Phone</label>
-                <input type="text" class="form-control"
-                  [(ngModel)]="profile()!.phone">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-control"
-                  [value]="profile()!.email" disabled>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Department</label>
-                <input type="text" class="form-control"
-                  [value]="profile()!.department" disabled>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Role</label>
-                <input type="text" class="form-control"
-                  [value]="profile()!.role" disabled>
-              </div>
-              <div class="d-flex gap-2">
-                <button class="btn btn-success w-100"
-                  (click)="updateProfile()">
-                  <i class="bi bi-check-circle me-2"></i>Update
-                </button>
-                <button class="btn btn-secondary w-100"
-                  (click)="isEditMode = false">
-                  Cancel
-                </button>
-              </div>
-            }
+            </div>
           </div>
 
+          <!-- Info Cards -->
+          <div class="col-md-8">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="card border-0 shadow-sm p-3">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                      <i class="bi bi-building text-primary fs-4"></i>
+                    </div>
+                    <div>
+                      <div class="text-muted small">Department</div>
+                      <div class="fw-bold">{{ profile()?.department || 'N/A' }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card border-0 shadow-sm p-3">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                      <i class="bi bi-cash text-success fs-4"></i>
+                    </div>
+                    <div>
+                      <div class="text-muted small">Salary</div>
+                      <div class="fw-bold">{{ profile()?.salary | number }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card border-0 shadow-sm p-3">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+                      <i class="bi bi-calendar text-warning fs-4"></i>
+                    </div>
+                    <div>
+                      <div class="text-muted small">Join Date</div>
+                      <div class="fw-bold">{{ profile()?.joinDate || 'N/A' }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card border-0 shadow-sm p-3">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-info bg-opacity-10 p-3">
+                      <i class="bi bi-shield text-info fs-4"></i>
+                    </div>
+                    <div>
+                      <div class="text-muted small">Role</div>
+                      <div class="fw-bold">{{ profile()?.role | titlecase }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      } @else {
-        <div class="alert alert-warning">
-          Profile not found! Contact admin.
+      }
+
+      <!-- Profile Edit Tab -->
+      @if(activeTab === 'profile') {
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-white fw-bold border-0 pt-3">Edit Profile</div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label">Name</label>
+                  <input type="text" class="form-control" [(ngModel)]="profile()!.name">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Phone</label>
+                  <input type="text" class="form-control" [(ngModel)]="profile()!.phone">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" [value]="profile()!.email" disabled>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Department</label>
+                  <input type="text" class="form-control" [value]="profile()!.department" disabled>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Role</label>
+                  <input type="text" class="form-control" [value]="profile()!.role" disabled>
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-success w-100" (click)="updateProfile()">
+                    <i class="bi bi-check-circle me-2"></i>Update
+                  </button>
+                  <button class="btn btn-secondary w-100" (click)="activeTab = 'dashboard'">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       }
 

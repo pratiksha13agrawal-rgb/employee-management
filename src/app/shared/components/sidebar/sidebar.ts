@@ -1,6 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { COMMON_IMPORTS } from '../../common.imports';
 
+export interface SidebarItem {
+  label: string;
+  icon: string;
+  tab: string;
+}
+
 @Component({
   selector: 'app-sidebar',
   imports: [...COMMON_IMPORTS],
@@ -9,11 +15,17 @@ import { COMMON_IMPORTS } from '../../common.imports';
   standalone: true
 })
 export class Sidebar {
-  @Input() activeTab = 'dashboard';
-  @Output() tabChange = new EventEmitter<string>();
+   @Input() items: SidebarItem[] = [];
+   @Input() activeTab = '';
+   @Input() userName = '';
+   @Input() userRole = '';
+   @Output() tabChange = new EventEmitter<string>();
+   @Output() onLogout = new EventEmitter<void>();
+ 
+   setTab(tab: string) {
+     this.activeTab = tab;
+     this.tabChange.emit(tab);
+   }
 
-  setTab(tab: string) {
-    this.activeTab = tab;
-    this.tabChange.emit(tab);
-  }
+  
 }
