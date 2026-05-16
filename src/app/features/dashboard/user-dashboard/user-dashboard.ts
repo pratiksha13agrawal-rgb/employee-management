@@ -40,10 +40,17 @@ export class UserDashboard implements OnInit {
 
   updateProfile() {    
     if(this.profile()) {
-       this.employeeService.update(this.profile()!);
-       this.isEditMode = false;
-       this.toastService.show('Profile updated!', 'success');
-    }   
+      this.employeeService.update(this.profile()!).subscribe({
+        next: () => {
+          this.toastService.show('Profile updated successfully!', 'success');
+          this.activeTab = 'dashboard';
+        },
+        error: (err) => {
+          const msg = err.error?.message || 'Update failed! Try again.';
+          this.toastService.show(msg, 'error');
+        }
+      });
+    } 
   }
   
   logout() {

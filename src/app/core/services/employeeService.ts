@@ -3,6 +3,7 @@ import { Employee } from '../../shared/models/employee';
 import { HttpClient } from '@angular/common/http';
 import { EmployeeImportDTO } from '../../shared/models/employeeImportDTO ';
 import { environment } from '../../../environments/environment';
+import { tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,7 @@ export class EmployeeService {
   }
 
   update(emp : Employee) {
-    this.http.put<Employee>(`${this.apiUrl}/${emp.id}`, emp).subscribe(() => this.loadAll());
+     return this.http.put<Employee>(`${this.apiUrl}/${emp.id}`, emp).pipe(tap(() => this.loadAll()));
   }
   
   delete(id: number) {
