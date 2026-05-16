@@ -17,22 +17,26 @@ export class EmployeeList {
   employees = this.employeeService.getAll();
   currentPage = signal(1);
   searchSubject = new Subject<string>();
-  empSearchQuery = signal('');
   selectedEmployeeId = signal<number | null>(null);
   pageSize = 5;
   deleteTargetId = signal<number | null>(null);
   showDeleteModal = signal(false);
   @Input() activeSubTab = '';
-
+  
   ngOnInit(): void {
-    // debounceTime setup
-    this.searchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-        ).subscribe(query => {
-          this.empSearchQuery.set(query);
-          this.currentPage.set(1);
-     });
+    // Search with debounce
+      this.searchSubject.pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      ).subscribe(query => {
+        if(query.trim()) {
+          this.employeeService.search(query).subscribe(data => {
+            this.employeeService.setEmployees(data);
+          });
+        } else {
+          this.employeeService.loadAll();
+        }
+      });
    }
 
   changeRole(id: number, event: Event) {
@@ -59,15 +63,7 @@ export class EmployeeList {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
 
-  filteredEmployees = computed(() => {
-    const query = this.empSearchQuery().toLowerCase();
-    if(!query) return this.employees();
-    return this.employees().filter(e =>
-      e.name.toLowerCase().includes(query) ||
-      e.email.toLowerCase().includes(query) ||
-      e.department.toLowerCase().includes(query)
-    );
-  });
+  filteredEmployees = computed(() => this.employees());
 
   editEmployee(id: number) {
     this.selectedEmployeeId.set(id);

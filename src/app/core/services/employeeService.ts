@@ -46,4 +46,12 @@ export class EmployeeService {
   bulkAdd(employees: EmployeeImportDTO[]) {
     return this.http.post<Employee[]>(`${this.apiUrl}/bulk`, employees);
   }
+
+  search(query: string) {
+    return this.http.get<Employee[]>(`${this.apiUrl}/search?query=${query}`);
+  }
+
+  setEmployees(data: Employee[]) {
+    this.employees.set(data);
+  }
 }
