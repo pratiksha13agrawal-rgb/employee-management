@@ -14,6 +14,7 @@ import { EmployeeImportDTO } from '../../../shared/models/employeeImportDTO ';
 import { ToastService } from '../../../core/services/toast';
 import { EmployeeForm } from '../../employees/employee-form/employee-form';
 import { EmployeeList } from '../../employees/employee-list/employee-list';
+import { User } from '../../../shared/models/user';
 
 Chart.register(...registerables); 
 @Component({
@@ -30,7 +31,7 @@ export class AdminDashboard implements OnInit, AfterViewInit {
   private authService = inject(Auth);
   private toastService = inject(ToastService);
 
-  users = signal<any[]>([]); 
+  users = signal<User[]>([]); 
   chartInstance: any;
   activeTab = 'dashboard';
   activeSubTab = 'view';
@@ -68,11 +69,13 @@ export class AdminDashboard implements OnInit, AfterViewInit {
   }
 
   loadUsers() {
-    this.userService.getAll().subscribe(data => this.users.set(data));
+    this.userService.getAll().subscribe(data => {
+      this.users.set(data);
+    });
   }
 
   makeEmployee(id: number) {
-    this.userService.makeEmployee(id).subscribe( () => {
+    this.userService.makeEmployee(id).subscribe( (res) => {      
       this.loadUsers();
       this.employeeService.loadAll();
     });

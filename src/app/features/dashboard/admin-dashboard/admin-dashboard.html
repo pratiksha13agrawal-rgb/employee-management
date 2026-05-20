@@ -194,7 +194,7 @@
                     @for(user of users(); track user.id) {
                       <tr>
                         <td>{{ user.id }}</td>
-                        <td>{{ user.name }}</td>
+                        <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
                         <td>
                           @if(user.role === 'admin') {
@@ -212,8 +212,9 @@
                         </td>
                         <td>
                           <button class="btn btn-sm btn-outline-primary me-1"
+                            [disabled]="user.employee"
                             (click)="makeEmployee(user.id)">
-                            Make Employee
+                            {{ user.employee ? 'Already Employee' : 'Make Employee' }}
                           </button>
                           <button class="btn btn-sm"
                             [class]="user.active ? 'btn-outline-danger' : 'btn-outline-success'"

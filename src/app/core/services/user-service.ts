@@ -14,7 +14,7 @@ export class UserService {
   }
 
   makeEmployee(id: number) {
-    return this.http.put(`${this.apiUrl}/${id}/make-employee`, {});
+    return this.http.put(`${this.apiUrl}/${id}/make-employee`, {}, {responseType: 'text'});
   }
 
   toggleActive(id: number) {
